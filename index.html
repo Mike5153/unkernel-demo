@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>unkernel Raft Chaos Lab — 浏览器内多节点 Linux Raft 混沌工程实验台</title>
+    <link rel="stylesheet" href="/src/chaos.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <h1>unkernel Raft Chaos Lab</h1>
+          <span id="support-badge" class="badge">Checking JSPI...</span>
+          <span id="cluster-badge" class="badge badge-muted">Idle</span>
+          <nav class="top-nav">
+            <a href="/" class="nav-link is-active">Raft Chaos Lab</a>
+            <a href="/terminal.html" class="nav-link">Terminal</a>
+          </nav>
+        </div>
+        <div class="actions">
+          <label class="size-select">
+            节点数
+            <select id="node-count">
+              <option value="3" selected>3 Nodes</option>
+              <option value="4">4 Nodes</option>
+              <option value="5">5 Nodes</option>
+            </select>
+          </label>
+          <button id="btn-boot-cluster" class="btn btn-primary">Boot Cluster</button>
+          <button id="btn-stop-cluster" class="btn btn-danger" disabled>Stop Cluster</button>
+        </div>
+      </header>
+
+      <div id="status-line" class="status-line">
+        Ready. 点击 <strong>Boot Cluster</strong> 在独立 Web Worker 中启动 3~5 个真实 Linux Wasm 内核并组建 Raft 集群。
+      </div>
+
+      <main class="chaos-layout">
+        <div class="chaos-main-col">
+          <section class="panel">
+            <div class="panel-header">
+              <h2>集群实时拓扑与状态机 (L2 Switch + Raft Consensus)</h2>
+              <span id="topo-summary" class="mono muted">等待启动...</span>
+            </div>
+            <div id="topo-svg" class="topo-stage"></div>
+            <div id="node-cards" class="node-cards-grid"></div>
+          </section>
+
+          <div id="telemetry-root" class="telemetry-root"></div>
+        </div>
+
+        <aside id="chaos-root" class="chaos-sidebar"></aside>
+      </main>
+    </div>
+
+    <div id="term-drawer" class="term-drawer" aria-hidden="true">
+      <div class="term-drawer-head">
+        <strong id="drawer-title">Node Terminal</strong>
+        <div class="drawer-actions">
+          <button id="btn-new-tab" class="btn btn-sm">+ New Shell (PTY)</button>
+          <button id="btn-ctrl-c" class="btn btn-sm">Ctrl+C</button>
+          <button id="btn-close-drawer" class="btn btn-sm btn-danger">关闭</button>
+        </div>
+      </div>
+
+      <div class="tab-toolbar">
+        <div id="tab-bar" class="tab-bar" role="tablist"></div>
+        <div class="quick-bar">
+          <span class="muted">诊断:</span>
+          <button class="chip" data-cmd="cat /proc/net/snmp | grep Tcp">snmp Tcp</button>
+          <button class="chip" data-cmd="cat /proc/net/tcp">net/tcp</button>
+          <button class="chip" data-cmd="ip addr show dev eth0">ip eth0</button>
+          <button class="chip" data-cmd="ps">ps</button>
+          <button class="chip" data-cmd="tail -n 25 /tmp/raft.log">raft.log</button>
+          <button class="chip" data-cmd="wget -qO- http://127.0.0.1:8080/_chaos/status">_chaos/status</button>
+        </div>
+      </div>
+
+      <div id="terminal-stage" class="terminal-stage drawer-stage">
+        <div id="terminal-empty" class="terminal-empty">
+          选择任意节点卡片上的 <strong>终端</strong> 按钮即可打开交互式 vsock Shell。
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

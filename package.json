@@ -1,0 +1,21 @@
+{
+  "name": "unkernel-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "build:raft": "powershell -ExecutionPolicy Bypass -File src/guest-raft/build.ps1",
+    "node-demo": "node src/node-demo.mjs"
+  },
+  "dependencies": {
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/xterm": "^6.0.0",
+    "unkernel": "^0.2.0-261121-e69adda"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>unkernel SDK — 多标签交互式终端</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <h1>unkernel Terminal</h1>
+          <span id="support-badge" class="badge">Checking JSPI...</span>
+          <span id="vm-badge" class="badge badge-muted">Idle</span>
+          <nav class="top-nav">
+            <a href="/" class="nav-link">Raft Chaos Lab</a>
+            <a href="/terminal.html" class="nav-link is-active">Terminal</a>
+          </nav>
+        </div>
+        <div class="actions">
+          <button id="btn-boot" class="btn btn-primary">Boot Linux</button>
+          <button id="btn-poweroff" class="btn" disabled>Poweroff</button>
+          <button id="btn-stop" class="btn btn-danger" disabled>Force Stop</button>
+        </div>
+      </header>
+
+      <div id="progress-bar" class="status-line">
+        Ready. Click <strong>Boot Linux</strong> to start the Wasm Linux kernel (base busybox shell).
+      </div>
+
+      <main class="grid">
+        <section class="panel terminal-panel">
+          <div class="tab-toolbar">
+            <div id="tab-bar" class="tab-bar" role="tablist"></div>
+            <div class="tab-actions">
+              <button id="btn-new-tab" class="btn btn-sm" disabled title="打开新的 PTY 终端 (vm.spawn)">
+                + New Shell
+              </button>
+              <button id="btn-ctrl-c" class="btn btn-sm" disabled title="向当前终端发送 Ctrl+C (SIGINT)">
+                Ctrl+C
+              </button>
+            </div>
+          </div>
+
+          <div class="quick-bar">
+            <span class="muted">Quick:</span>
+            <button class="chip" data-cmd="uname -a" disabled>uname -a</button>
+            <button class="chip" data-cmd="ls -la /mnt/host" disabled>ls /mnt/host</button>
+            <button class="chip" data-cmd="vi /mnt/host/hello.txt" disabled>vi hello.txt</button>
+            <button class="chip" data-cmd="top" disabled>top</button>
+            <button class="chip" data-cmd='echo "from $(tty)" > /mnt/host/guest.txt' disabled>write guest.txt</button>
+          </div>
+
+          <div id="terminal-stage" class="terminal-stage">
+            <div id="terminal-empty" class="terminal-empty">
+              Click <strong>Boot Linux</strong> to attach <code>hvc0</code> console and open PTY tabs.
+            </div>
+          </div>
+        </section>
+
+        <aside class="sidebar">
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Programmatic <code>vm.exec()</code></h2>
+            </div>
+            <form id="exec-form" class="input-row">
+              <input
+                id="exec-in"
+                type="text"
+                value="uname -sr && id"
+                placeholder="uname -a"
+                disabled
+              />
+              <button id="btn-exec" class="btn" type="submit" disabled>Exec</button>
+            </form>
+            <pre id="exec-out" class="mini-log">Boot the VM to run vm.exec().</pre>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Host Mount <code>/mnt/host</code> (MemoryFs)</h2>
+              <button id="btn-host-write" class="btn btn-sm" disabled>+ Write Host File</button>
+            </div>
+            <div id="memfs-files" class="file-list"></div>
+            <pre id="memfs-events" class="mini-log">Waiting for guest file events...</pre>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Kernel Logs (dmesg)</h2>
+              <span id="stats-line" class="muted"></span>
+            </div>
+            <pre id="kernel-logs" class="mini-log"></pre>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
