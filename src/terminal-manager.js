@@ -135,7 +135,7 @@ export class TerminalManager {
   }
 
   /** Open a new interactive PTY tab via vm.spawn(). */
-  async openPtyTab(vm, waitForUserspace) {
+  async openPtyTab(vm, waitForUserspace, opts = {}) {
     if (!vm) return null;
     this.#emptyEl.style.display = "none";
 
@@ -165,8 +165,8 @@ export class TerminalManager {
 
     const tab = {
       id,
-      title: `tty ${num}`,
-      closable: true,
+      title: opts.title ?? `tty ${num}`,
+      closable: opts.closable ?? true,
       kind: "pty",
       paneEl,
       term,
@@ -200,7 +200,7 @@ export class TerminalManager {
       if (closed) return tab;
 
       fitAddon.fit();
-      pty = await vm.spawn(undefined, undefined, {
+      pty = await vm.spawn(opts.file, opts.args, {
         cols: term.cols,
         rows: term.rows,
         term: "xterm-256color",

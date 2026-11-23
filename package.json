@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "build:raft": "powershell -ExecutionPolicy Bypass -File src/guest-raft/build.ps1",
+    "build:oslab": "powershell -ExecutionPolicy Bypass -File src/guest-oslab/build.ps1",
     "node-demo": "node src/node-demo.mjs"
   },
   "dependencies": {

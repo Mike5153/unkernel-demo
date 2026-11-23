@@ -161,7 +161,7 @@ func (t *Transport) callOnConn(pc *peerConn, addr, msgType string, req interface
 	if pc.conn == nil {
 		dialTimeout := timeout
 		if dialTimeout > 600*time.Millisecond {
-			dialTimeout = 600*time.Millisecond
+			dialTimeout = 600 * time.Millisecond
 		}
 		c, err := net.DialTimeout("tcp", addr, dialTimeout)
 		if err != nil {

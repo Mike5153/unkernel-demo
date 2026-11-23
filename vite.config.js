@@ -16,6 +16,7 @@ export default defineConfig({
       input: {
         main: resolve(import.meta.dirname, "index.html"),
         terminal: resolve(import.meta.dirname, "terminal.html"),
+        osLens: resolve(import.meta.dirname, "os-lens.html"),
       },
     },
   },
