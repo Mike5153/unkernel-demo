@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>unkernel OS 内核透视镜 — Sv39 页表 · CoW 物理页分裂 · /proc 进程树</title>
+    <link rel="stylesheet" href="/src/os-lens.css" />
+  </head>
+  <body>
+    <div class="lens-app">
+      <header class="topbar">
+        <div class="brand">
+          <h1>unkernel OS 内核透视镜</h1>
+          <span id="support-badge" class="badge">Checking JSPI...</span>
+          <span id="vm-badge" class="badge badge-muted">Idle</span>
+          <nav class="top-nav">
+            <a href="/" class="nav-link">Raft Chaos Lab</a>
+            <a href="/terminal.html" class="nav-link">Terminal</a>
+            <a href="/os-lens.html" class="nav-link is-active">OS 内核透视镜</a>
+          </nav>
+        </div>
+        <div class="actions">
+          <button id="btn-boot" class="btn btn-primary">Boot OS Lab</button>
+          <button id="btn-refresh" class="btn" disabled>立即采样</button>
+          <button id="btn-stop" class="btn btn-danger" disabled>Stop</button>
+        </div>
+      </header>
+
+      <div id="status-line" class="status-line">
+        Ready. 点击 <strong>Boot OS Lab</strong> 启动真实 Linux 7.3.4 内核 (Inline 模式，宿主机 JS 直读 Wasm 线性内存 + Sv39 页表)。
+      </div>
+
+      <main class="split-workspace">
+        <!-- 左侧：Linux 交互式终端 + 交互式 OS 教材实验步骤 -->
+        <section class="left-pane">
+          <div class="panel lesson-panel">
+            <div class="panel-header">
+              <h2>交互式 OS 教材实验台</h2>
+              <select id="lesson-select" class="lesson-select"></select>
+            </div>
+            <p id="lesson-summary" class="lesson-summary"></p>
+            <div id="lesson-steps" class="lesson-steps"></div>
+            <div id="lesson-explain" class="lesson-explain"></div>
+          </div>
+
+          <div class="panel terminal-panel">
+            <div class="tab-toolbar">
+              <div id="tab-bar" class="tab-bar" role="tablist"></div>
+              <div class="tab-actions">
+                <button id="btn-new-tab" class="btn btn-sm" disabled>+ New Shell</button>
+                <button id="btn-ctrl-c" class="btn btn-sm" disabled>Ctrl+C</button>
+              </div>
+            </div>
+            <div class="quick-bar">
+              <span class="muted">快捷指令:</span>
+              <button class="chip" data-cmd="mmap(1, rw)" disabled>mmap()</button>
+              <button class="chip" data-cmd="fork()" disabled>fork()</button>
+              <button class="chip" data-cmd="sysinfo" disabled>sysinfo</button>
+              <button class="chip" data-cmd="maps" disabled>/proc/maps</button>
+              <button class="chip" data-cmd="ps" disabled>ps</button>
+            </div>
+            <div id="terminal-stage" class="terminal-stage">
+              <div id="terminal-empty" class="terminal-empty">
+                点击顶部 <strong>Boot OS Lab</strong>，将自动启动 Linux 并挂载 <code>/opt/oslab/oslab</code> 交互实验环境。
+              </div>
+            </div>
+          </div>
+
+          <div class="panel events-panel">
+            <div class="panel-header">
+              <h2>内核事件时间线 (mmap · page_fault · fork · CoW)</h2>
+              <span id="vmstat-line" class="mono muted">pgfault: -</span>
+            </div>
+            <div id="event-feed" class="event-feed mono"></div>
+          </div>
+        </section>
+
+        <!-- 右侧：Sv39 页表 + CoW 物理页分裂 + /proc 进程树 -->
+        <section class="right-pane">
+          <section class="panel">
+            <div class="panel-header">
+              <h2>1. Sv39 三级页表映射实时透视 (PGD → PMD → PTE)</h2>
+              <span class="muted mono">宿主机直读 vm.kernel.memory</span>
+            </div>
+            <div id="sv39-root" class="viz-body"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>2. Copy-on-Write (写时复制) 物理页分裂过程</h2>
+              <span class="muted mono">PFN 引用拓扑 &amp; 物理 RAM 实时内容</span>
+            </div>
+            <div id="cow-root" class="viz-body"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>3. /proc 实时进程树 &amp; VMA 空间</h2>
+              <span class="muted mono">点击任意 PID 查看其 /proc/&lt;pid&gt;/maps</span>
+            </div>
+            <div id="proc-root" class="viz-body"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/src/os-lens.ts"></script>
+  </body>
+</html>
